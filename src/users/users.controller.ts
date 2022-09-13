@@ -1,8 +1,9 @@
 import { BaseController } from '../common/base.controller';
 import { LoggerService } from '../logger/logger.service';
 import { Request, Response } from 'express';
+import { IUserController } from './users.interface';
 
-export class UserController extends BaseController {
+export class UserController extends BaseController implements IUserController {
 	constructor(logger: LoggerService) {
 		super(logger);
 		this.bindRoutes([{ path: '/register', method: 'post', func: this.register }]);
