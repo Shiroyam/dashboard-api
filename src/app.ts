@@ -1,30 +1,29 @@
 import dotenv from 'dotenv';
 import express, { Express } from 'express';
 import { Server } from 'http';
+import { inject } from 'inversify/lib/annotation/inject';
+import { injectable } from 'inversify/lib/annotation/injectable';
 import { ExeptionFilter } from './errors/exeption.filter';
-import { LoggerService } from './logger/logger.service';
+import { ILogger } from './logger/logger.interface';
+import { TYPES } from './types';
 import { UserController } from './users/users.controller';
+import 'reflect-metadata';
 
 dotenv.config();
 
+@injectable()
 export class App {
 	app: Express;
 	server: Server;
 	port: string;
-	logger: LoggerService;
-	userController: UserController;
-	exeptionFilter: ExeptionFilter;
 
 	constructor(
-		logger: LoggerService,
-		userController: UserController,
-		exeptionFilter: ExeptionFilter,
+		@inject(TYPES.ILogger) private logger: ILogger,
+		@inject(TYPES.UserController) private userController: UserController,
+		@inject(TYPES.ExeptionFilter) private exeptionFilter: ExeptionFilter,
 	) {
 		this.app = express();
 		this.port = process.env.PORT || '8000';
-		this.logger = logger;
-		this.userController = userController;
-		this.exeptionFilter = exeptionFilter;
 	}
 
 	useRouter(): void {
